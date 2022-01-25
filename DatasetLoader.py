@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:24:13
 LastEditors: Renhetian
-LastEditTime: 2022-01-25 12:40:35
+LastEditTime: 2022-01-25 13:41:15
 '''
 
 import os
@@ -14,7 +14,7 @@ from Utils import build_data_feature, build_kernel_matrix, doc_format
 
 class DatasetLoader:
     
-    def __init__(self, save_path='/data/loader/default', dataset_name='default') -> None:
+    def __init__(self, save_path='data/loader/default', dataset_name='default') -> None:
         self.dataset_name = dataset_name
         self.save_path = save_path
         self.data = []
@@ -39,8 +39,8 @@ class DatasetLoader:
 
 class FileDatasetLoader(DatasetLoader):
 
-    def __init__(self, dataset_name='default') -> None:
-        super().__init__(dataset_name)
+    def __init__(self, save_path='data/loader/default', dataset_name='default') -> None:
+        super().__init__(save_path, dataset_name)
 
     def load(self, file_path):
         for file_name in os.listdir(file_path):
