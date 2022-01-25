@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:24:13
 LastEditors: Renhetian
-LastEditTime: 2022-01-25 13:41:15
+LastEditTime: 2022-01-25 14:02:53
 '''
 
 import os
@@ -29,8 +29,8 @@ class DatasetLoader:
         build_data_feature(self, model_name)
     
     def save(self, data, save_name):
-        self.save_path += '/{}-{}.pkl'.format(self.dataset_name, save_name)
-        with open(self.save_path, 'wb') as f:
+        save_path = self.save_path + '/{}-{}.pkl'.format(self.dataset_name, save_name)
+        with open(save_path, 'wb') as f:
             pickle.dump(data, f)
 
     def load(self):
@@ -56,3 +56,11 @@ class FileDatasetLoader(DatasetLoader):
                         self.label.append(1)
         self.save([self.data, self.label], 'data')
 
+
+class PickleDatasetLoader(DatasetLoader):
+
+    def __init__(self, save_path='data/loader/default', dataset_name='default') -> None:
+        super().__init__(save_path, dataset_name)
+
+    def load(self):
+        pass
