@@ -4,15 +4,18 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-25 00:35:53
 LastEditors: Renhetian
-LastEditTime: 2022-01-25 13:47:16
+LastEditTime: 2022-01-26 21:19:08
 '''
 
-from DatasetLoader import FileDatasetLoader
+from Preprocess import Preprocess
+from DatasetLoader import DatasetLoader
 
 
 # python -m script.data_preprocess
 if __name__ == "__main__":
-    fdl = FileDatasetLoader(save_path='data/loader/subjectivity', dataset_name='subjectivity')
-    fdl.load(file_path='data/dataset/subjectivity/')
-    fdl.preprocessing(window_size=2, depth=1, model_name='cahya/bert-base-indonesian-1.5G')
-    # fdl.preprocessing()
+    dl = DatasetLoader('subjectivity')
+    pp = Preprocess(dl)
+    pp.load_file('data/dataset/subjectivity/')
+    pp.build_kernel_matrix(window_size=2, depth=1)
+    pp.build_data_feature(model_name='cahya/bert-base-indonesian-1.5G')
+    # pp.build_data_feature(model_name='xlm-roberta-base')
