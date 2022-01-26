@@ -4,11 +4,12 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-26 21:02:11
 LastEditors: Renhetian
-LastEditTime: 2022-01-26 21:18:41
+LastEditTime: 2022-01-27 01:04:28
 '''
 
 import os
 import torch
+import hashlib
 import numpy as np
 import networkx as nx
 from tqdm import tqdm
@@ -36,7 +37,7 @@ class Preprocess:
                         self.loader.label.append(1)
         self.loader.save([self.loader.data, self.loader.label], 'data')
 
-    def build_kernel_matrix(self, window_size, depth):
+    def build_kernel_matrix(self, window_size=2, depth=1):
         '''
         Build kernel matrices.
         构建图核。
@@ -90,7 +91,7 @@ class Preprocess:
 
         self.loader.save(K, 'kernel_matrix')
 
-    def build_data_feature(self, model_name):
+    def build_data_feature(self, model_name='xlm-roberta-base'):
         '''
         Build sentence features.
         构建句子的特征。
@@ -111,4 +112,55 @@ class Preprocess:
                 encoded_input = tokenizer(i, return_tensors='pt').to(device)
                 output = model(**encoded_input).pooler_output
                 feature = torch.cat([feature,output], dim=0)
-        self.loader.save(feature, 'feature')
+        self.loader.save(feature.to(torch.device("cpu")), 'feature')
+
+    def build_wl_embedding(self, max_iter=2):
+        if not self.loader.data or type(self.loader.kernel_matrix) == 'NoneType':
+            print("empty data and kernel_matrix")
+            return 
+
+        node_color_dict = {}
+        node_neighbor_dict = {}
+        node_list = np.mgrid[:len(self.loader.data)]
+        link_list = np.empty([0,2])
+
+        print("\nBuild link_list:")
+        for i in tqdm(range(self.loader.kernel_matrix.shape[0])):
+            for j in range(i+1, self.loader.kernel_matrix.shape[0]):
+                if self.loader.kernel_matrix[i,j] >= self.loader.edge_threshold:
+                    edge = np.array([[i,j]])
+                    link_list = np.append(link_list,edge,axis=0)
+
+        for node in node_list:
+            node_color_dict[node] = 1
+            node_neighbor_dict[node] = {}
+        for pair in link_list:
+            u1, u2 = pair
+            if u1 not in node_neighbor_dict:
+                node_neighbor_dict[u1] = {}
+            if u2 not in node_neighbor_dict:
+                node_neighbor_dict[u2] = {}
+            node_neighbor_dict[u1][u2] = 1
+            node_neighbor_dict[u2][u1] = 1
+
+        iteration_count = 1
+        while True:
+            new_color_dict = {}
+            for node in node_list:
+                neighbors = node_neighbor_dict[node]
+                neighbor_color_list = [node_color_dict[neb] for neb in neighbors]
+                color_string_list = [str(node_color_dict[node])] + sorted([str(color) for color in neighbor_color_list])
+                color_string = "_".join(color_string_list)
+                hash_object = hashlib.md5(color_string.encode())
+                hashing = hash_object.hexdigest()
+                new_color_dict[node] = hashing
+            color_index_dict = {k: v+1 for v, k in enumerate(sorted(set(new_color_dict.values())))}
+            for node in new_color_dict:
+                new_color_dict[node] = color_index_dict[new_color_dict[node]]
+            if node_color_dict == new_color_dict or iteration_count == max_iter:
+                break
+            else:
+                node_color_dict = new_color_dict
+            iteration_count += 1
+
+        self.loader.save(node_color_dict, 'wl_embedding')
