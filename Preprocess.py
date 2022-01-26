@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-26 21:02:11
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 01:04:28
+LastEditTime: 2022-01-27 01:56:12
 '''
 
 import os
@@ -116,7 +116,7 @@ class Preprocess:
 
     def build_wl_embedding(self, max_iter=2):
         if not self.loader.data or type(self.loader.kernel_matrix) == 'NoneType':
-            print("empty data and kernel_matrix")
+            print("empty data or kernel_matrix")
             return 
 
         node_color_dict = {}

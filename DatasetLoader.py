@@ -4,11 +4,13 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:24:13
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 00:31:16
+LastEditTime: 2022-01-27 02:16:16
 '''
 
 import os
 import pickle
+
+from tqdm import tqdm
 
 
 class DatasetLoader:
@@ -39,3 +41,27 @@ class DatasetLoader:
             self.feature = pickle.load(open(self.save_path + '/feature.pkl', 'rb'))
         if attr == 'kernel_matrix' or attr == 'all':
             self.kernel_matrix = pickle.load(open(self.save_path + '/kernel_matrix.pkl', 'rb'))
+
+    def dump(self):
+        if not self.data or type(self.kernel_matrix) == 'NoneType' or type(self.feature) == 'NoneType':
+            print("empty data or kernel_matrix or feature")
+            return 
+
+        with open(self.save_path + '/node','w', encoding='utf-8') as file:
+            for i in tqdm(range(len(self.data))):
+                file.write(str(i))
+                file.write('\t')
+                for j in self.feature[i]:
+                    if j > 0:
+                        file.write('1')
+                    else:
+                        file.write('0')
+                    file.write('\t')
+                file.write(str(self.label[i]))
+                file.write('\n')
+
+        with open(self.save_path + '/link','w', encoding='utf-8') as file:
+            for i in tqdm(range(self.kernel_matrix.shape[0])):
+                for j in range(i+1, self.kernel_matrix.shape[0]):
+                    if self.kernel_matrix[i,j] >= self.edge_threshold:
+                        file.write(str(i) + '\t' + str(j) + '\n')
