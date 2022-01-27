@@ -4,10 +4,10 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-27 20:48:11
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 21:03:22
+LastEditTime: 2022-01-27 21:17:17
 '''
 
-from Utils import time_now_formate
+from codes.Utils import time_now_formate
 import os
 import pickle
 import numpy as np

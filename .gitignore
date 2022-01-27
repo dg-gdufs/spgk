@@ -131,4 +131,5 @@ dmypy.json
 .vscode/
 .idea/
 data/loader/
+model/
 *test*

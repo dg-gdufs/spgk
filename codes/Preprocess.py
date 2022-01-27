@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-26 21:02:11
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 20:43:58
+LastEditTime: 2022-01-27 21:17:27
 '''
 
 import os
@@ -15,7 +15,7 @@ import networkx as nx
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModel
 
-from Utils import doc_format, spgk, device
+from codes.Utils import doc_format, spgk, device
 
 
 class Preprocess:
