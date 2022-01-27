@@ -4,10 +4,11 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:54:30
 LastEditors: Renhetian
-LastEditTime: 2022-01-26 23:24:53
+LastEditTime: 2022-01-27 21:02:55
 '''
 
 import re
+import time
 import torch
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -53,3 +54,10 @@ def spgk(sp_g1, sp_g2, norm1, norm2):
         kernel_value /= (norm1 * norm2)
 
         return kernel_value
+
+
+def time_now_formate():
+    '''
+    返回当前的格式化时间，格式：%Y-%m-%d %H:%M:%S
+    '''
+    return time.strftime("%Y-%m-%d %H;%M;%S", time.localtime(time.time()))

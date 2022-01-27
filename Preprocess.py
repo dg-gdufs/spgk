@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-26 21:02:11
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 01:56:12
+LastEditTime: 2022-01-27 20:43:58
 '''
 
 import os
@@ -35,6 +35,7 @@ class Preprocess:
                     for i in file:
                         self.loader.data.append(doc_format(i))
                         self.loader.label.append(1)
+        self.loader.label = np.array(self.loader.label)
         self.loader.save([self.loader.data, self.loader.label], 'data')
 
     def build_kernel_matrix(self, window_size=2, depth=1):
@@ -114,22 +115,30 @@ class Preprocess:
                 feature = torch.cat([feature,output], dim=0)
         self.loader.save(feature.to(torch.device("cpu")), 'feature')
 
+    def build_link_list(self, edge_threshold):
+        if type(self.loader.kernel_matrix) == 'NoneType':
+            print("empty kernel_matrix")
+            return 
+
+        print("\nBuild link_list:")
+        link_list = np.empty([0,2])
+        for i in tqdm(range(self.loader.kernel_matrix.shape[0])):
+            for j in range(i+1, self.loader.kernel_matrix.shape[0]):
+                if self.loader.kernel_matrix[i,j] >= edge_threshold:
+                    edge = np.array([[i,j]])
+                    link_list = np.append(link_list,edge,axis=0)
+
+        self.loader.save(link_list, 'link_list')
+
     def build_wl_embedding(self, max_iter=2):
-        if not self.loader.data or type(self.loader.kernel_matrix) == 'NoneType':
-            print("empty data or kernel_matrix")
+        if not self.loader.data or type(self.loader.kernel_matrix) == 'NoneType' or type(self.loader.link_list) == 'NoneType':
+            print("empty data or kernel_matrix or link_list")
             return 
 
         node_color_dict = {}
         node_neighbor_dict = {}
         node_list = np.mgrid[:len(self.loader.data)]
-        link_list = np.empty([0,2])
-
-        print("\nBuild link_list:")
-        for i in tqdm(range(self.loader.kernel_matrix.shape[0])):
-            for j in range(i+1, self.loader.kernel_matrix.shape[0]):
-                if self.loader.kernel_matrix[i,j] >= self.loader.edge_threshold:
-                    edge = np.array([[i,j]])
-                    link_list = np.append(link_list,edge,axis=0)
+        link_list = self.loader.link_list
 
         for node in node_list:
             node_color_dict[node] = 1

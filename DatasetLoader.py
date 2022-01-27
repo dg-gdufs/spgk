@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:24:13
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 02:16:16
+LastEditTime: 2022-01-27 20:54:31
 '''
 
 import os
@@ -20,12 +20,14 @@ class DatasetLoader:
     def __init__(self, dataset_name='default') -> None:
         self.dataset_name = dataset_name
         self.save_path += dataset_name
+
         self.data = []
         self.label = []
         self.feature = None
         self.kernel_matrix = None
-        self.edge_threshold = 0.2
+        self.link_list = None
         self.wl_embedding = None
+
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
     
@@ -36,11 +38,25 @@ class DatasetLoader:
 
     def load(self, attr='all'):
         if attr == 'data' or attr == 'all':
-            self.data, self.label = pickle.load(open(self.save_path + '/data.pkl', 'rb'))
+            try:
+                self.data, self.label = pickle.load(open(self.save_path + '/data.pkl', 'rb'))
+            except:
+                print("data.pkl not found")
         if attr == 'feature' or attr == 'all':
-            self.feature = pickle.load(open(self.save_path + '/feature.pkl', 'rb'))
+            try:
+                self.feature = pickle.load(open(self.save_path + '/feature.pkl', 'rb'))
+            except:
+                print("feature.pkl not found")
         if attr == 'kernel_matrix' or attr == 'all':
-            self.kernel_matrix = pickle.load(open(self.save_path + '/kernel_matrix.pkl', 'rb'))
+            try:
+                self.kernel_matrix = pickle.load(open(self.save_path + '/kernel_matrix.pkl', 'rb'))
+            except:
+                print("kernel_matrix.pkl not found")
+        if attr == 'link_list' or attr == 'all':
+            try:
+                self.link_list = pickle.load(open(self.save_path + '/link_list.pkl', 'rb'))
+            except:
+                print("link_list.pkl not found")
 
     def dump(self):
         if not self.data or type(self.kernel_matrix) == 'NoneType' or type(self.feature) == 'NoneType':
