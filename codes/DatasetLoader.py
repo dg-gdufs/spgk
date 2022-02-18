@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:24:13
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 20:54:31
+LastEditTime: 2022-02-18 23:34:48
 '''
 
 import os
@@ -16,20 +16,22 @@ from tqdm import tqdm
 class DatasetLoader:
 
     save_path = 'data/loader/'
+    dump_path = 'data/graphbert_dataset/'
     
     def __init__(self, dataset_name='default') -> None:
         self.dataset_name = dataset_name
         self.save_path += dataset_name
+        self.dump_path += dataset_name
 
         self.data = []
         self.label = []
         self.feature = None
         self.kernel_matrix = None
-        self.link_list = None
-        self.wl_embedding = None
 
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
+        if not os.path.exists(self.dump_path):
+            os.makedirs(self.dump_path)
     
     def save(self, data, save_name):
         save_path = self.save_path + '/{}.pkl'.format(save_name)
@@ -58,12 +60,12 @@ class DatasetLoader:
             except:
                 print("link_list.pkl not found")
 
-    def dump(self):
+    def dump(self, edge_threshold=0.2):
         if not self.data or type(self.kernel_matrix) == 'NoneType' or type(self.feature) == 'NoneType':
             print("empty data or kernel_matrix or feature")
             return 
 
-        with open(self.save_path + '/node','w', encoding='utf-8') as file:
+        with open(self.dump_path + '/node','w', encoding='utf-8') as file:
             for i in tqdm(range(len(self.data))):
                 file.write(str(i))
                 file.write('\t')
@@ -76,8 +78,8 @@ class DatasetLoader:
                 file.write(str(self.label[i]))
                 file.write('\n')
 
-        with open(self.save_path + '/link','w', encoding='utf-8') as file:
+        with open(self.dump_path + '/link','w', encoding='utf-8') as file:
             for i in tqdm(range(self.kernel_matrix.shape[0])):
                 for j in range(i+1, self.kernel_matrix.shape[0]):
-                    if self.kernel_matrix[i,j] >= self.edge_threshold:
+                    if self.kernel_matrix[i,j] >= edge_threshold:
                         file.write(str(i) + '\t' + str(j) + '\n')

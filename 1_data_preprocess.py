@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-25 00:35:53
 LastEditors: Renhetian
-LastEditTime: 2022-01-27 21:18:01
+LastEditTime: 2022-02-18 23:40:13
 '''
 
 from codes.Preprocess import Preprocess
@@ -21,8 +21,7 @@ model_name = 'cahya/bert-base-indonesian-1.5G'
 if __name__ == "__main__":
     dl = DatasetLoader(dataset_name)
     pp = Preprocess(dl)
-    pp.load_file('data/dataset/' + dataset_name)
+    pp.load_file()
     pp.build_kernel_matrix(window_size, depth)
     pp.build_data_feature(model_name)
-    pp.build_link_list(edge_threshold)
-    
+    dl.dump(edge_threshold)
