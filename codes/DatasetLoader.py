@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:24:13
 LastEditors: Renhetian
-LastEditTime: 2022-02-18 23:34:48
+LastEditTime: 2022-02-19 00:01:31
 '''
 
 import os
@@ -54,11 +54,6 @@ class DatasetLoader:
                 self.kernel_matrix = pickle.load(open(self.save_path + '/kernel_matrix.pkl', 'rb'))
             except:
                 print("kernel_matrix.pkl not found")
-        if attr == 'link_list' or attr == 'all':
-            try:
-                self.link_list = pickle.load(open(self.save_path + '/link_list.pkl', 'rb'))
-            except:
-                print("link_list.pkl not found")
 
     def dump(self, edge_threshold=0.2):
         if not self.data or type(self.kernel_matrix) == 'NoneType' or type(self.feature) == 'NoneType':

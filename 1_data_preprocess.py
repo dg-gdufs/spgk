@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-25 00:35:53
 LastEditors: Renhetian
-LastEditTime: 2022-02-18 23:40:13
+LastEditTime: 2022-02-19 00:02:01
 '''
 
 from codes.Preprocess import Preprocess
@@ -24,4 +24,5 @@ if __name__ == "__main__":
     pp.load_file()
     pp.build_kernel_matrix(window_size, depth)
     pp.build_data_feature(model_name)
+    dl.load()
     dl.dump(edge_threshold)

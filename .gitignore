@@ -131,5 +131,7 @@ dmypy.json
 .vscode/
 .idea/
 data/loader/
+data/graphbert_dataset/
+data/graphbert_loader/
 model/
 *test*
