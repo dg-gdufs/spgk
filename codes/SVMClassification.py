@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-27 20:48:11
 LastEditors: Renhetian
-LastEditTime: 2022-02-20 00:51:49
+LastEditTime: 2022-02-20 01:18:29
 '''
 
 from codes.Utils import time_now_formate
@@ -38,7 +38,7 @@ class SVMClassification:
 
         X_train, X_test, y_train, y_test = train_test_split(feature, label, test_size=self.test_size,random_state=0)
         # 训练模型
-        model = OneVsRestClassifier(SVC(kernel='rbf',probability=True,random_state=0))
+        model = OneVsRestClassifier(SVC(kernel='rbf',probability=True,random_state=0,verbose=True))
         print("[INFO] Successfully initialize a new model !")
         print("[INFO] Training the model…… ")
         clt = model.fit(X_train,y_train)
