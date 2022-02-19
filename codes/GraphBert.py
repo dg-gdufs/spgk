@@ -121,6 +121,3 @@ class GraphBert(BertPreTrainedModel):
         pooled_output = self.pooler(sequence_output)
         outputs = (sequence_output, pooled_output,) + encoder_outputs[1:]
         return outputs
-
-    def run(self):
-        pass

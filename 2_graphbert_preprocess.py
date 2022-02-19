@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-02-19 00:02:37
 LastEditors: Renhetian
-LastEditTime: 2022-02-19 22:06:18
+LastEditTime: 2022-02-19 22:25:20
 '''
 
 from codes.GraphBertPreprocess import GraphBertPreprocess
@@ -16,8 +16,8 @@ k = 5
 
 
 if __name__ == "__main__":
-    gb = GraphBertPreprocess(dataset_name)
-    gb.build_graphbert_data(c)
-    gb.build_wl(max_iter)
-    gb.build_batch(k)
-    gb.build_hop(k)
+    gbp = GraphBertPreprocess(dataset_name)
+    gbp.build_graphbert_data(c)
+    gbp.build_wl(max_iter)
+    gbp.build_batch(k)
+    gbp.build_hop(k)

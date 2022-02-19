@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-02-19 00:04:32
 LastEditors: Renhetian
-LastEditTime: 2022-02-19 22:06:00
+LastEditTime: 2022-02-19 22:54:37
 '''
 
 import os
@@ -113,22 +113,12 @@ class GraphBertPreprocess:
 
         norm_adj = adj_normalize(adj + sp.eye(adj.shape[0]))
 
-        #-----------
-        idx_train = range(9000)
-        idx_val = range(9000, 10000)
-        idx_test = range(9000, 10000)
-        #-----------
-
         features = torch.FloatTensor(np.array(features.todense()))
         labels = torch.LongTensor(np.where(one_hot_labels)[1])
         adj = sparse_mx_to_torch_sparse_tensor(norm_adj)
 
-        idx_train = torch.LongTensor(idx_train)
-        idx_val = torch.LongTensor(idx_val)
-        idx_test = torch.LongTensor(idx_test)
-
         raw_embeddings, wl_embedding, hop_embeddings, int_embeddings = None, None, None, None
-        self.graphbert_data = {'X': features, 'A': adj, 'S': eigen_adj, 'index_id_map': index_id_map, 'edges': edges_unordered, 'raw_embeddings': raw_embeddings, 'wl_embedding': wl_embedding, 'hop_embeddings': hop_embeddings, 'int_embeddings': int_embeddings, 'y': labels, 'idx': idx, 'idx_train': idx_train, 'idx_test': idx_test, 'idx_val': idx_val}
+        self.graphbert_data = {'X': features, 'A': adj, 'S': eigen_adj, 'index_id_map': index_id_map, 'edges': edges_unordered, 'raw_embeddings': raw_embeddings, 'wl_embedding': wl_embedding, 'hop_embeddings': hop_embeddings, 'int_embeddings': int_embeddings, 'y': labels, 'idx': idx}
         self.save(self.graphbert_data, 'graphbert_data')
 
     def build_wl(self, max_iter=2):
