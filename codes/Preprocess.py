@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-26 21:02:11
 LastEditors: Renhetian
-LastEditTime: 2022-02-19 00:49:56
+LastEditTime: 2022-02-19 19:23:20
 '''
 
 import os
@@ -92,6 +92,7 @@ class Preprocess:
                 K[i,j] = spgk(sp[i], sp[j], norm[i], norm[j])
                 K[j,i] = K[i,j]
 
+        self.loader.kernel_matrix = K
         self.loader.save(K, 'kernel_matrix')
 
     def build_data_feature(self, model_name='xlm-roberta-base'):
@@ -115,4 +116,6 @@ class Preprocess:
                 encoded_input = tokenizer(i, return_tensors='pt').to(device)
                 output = model(**encoded_input).pooler_output
                 feature = torch.cat([feature,output], dim=0)
-        self.loader.save(feature.to(torch.device("cpu")), 'feature')
+
+        self.loader.feature = feature.to(torch.device("cpu"))
+        self.loader.save(self.loader.feature, 'feature')
