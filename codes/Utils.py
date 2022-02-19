@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:54:30
 LastEditors: Renhetian
-LastEditTime: 2022-02-19 19:19:55
+LastEditTime: 2022-02-20 00:53:06
 '''
 
 import re
@@ -14,6 +14,7 @@ import numpy as np
 import scipy.sparse as sp
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cpu")
 
 
 def doc_format(string):

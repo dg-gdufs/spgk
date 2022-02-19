@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-02-19 00:04:32
 LastEditors: Renhetian
-LastEditTime: 2022-02-19 22:54:37
+LastEditTime: 2022-02-19 23:53:57
 '''
 
 import os
@@ -120,6 +120,7 @@ class GraphBertPreprocess:
         raw_embeddings, wl_embedding, hop_embeddings, int_embeddings = None, None, None, None
         self.graphbert_data = {'X': features, 'A': adj, 'S': eigen_adj, 'index_id_map': index_id_map, 'edges': edges_unordered, 'raw_embeddings': raw_embeddings, 'wl_embedding': wl_embedding, 'hop_embeddings': hop_embeddings, 'int_embeddings': int_embeddings, 'y': labels, 'idx': idx}
         self.save(self.graphbert_data, 'graphbert_data')
+        print('graphbert_data build success')
 
     def build_wl(self, max_iter=2):
         if not self.graphbert_data:
@@ -164,6 +165,7 @@ class GraphBertPreprocess:
             iteration_count += 1
 
         self.save(node_color_dict, 'wl_'+str(max_iter))
+        print('wl_{} build success'.format(max_iter))
 
     def build_batch(self, k=5):
         if not self.graphbert_data:
@@ -184,6 +186,7 @@ class GraphBertPreprocess:
                 user_top_k_neighbor_intimacy_dict[node_id].append((neighbor_id, s[neighbor_index]))
 
         self.save(user_top_k_neighbor_intimacy_dict, 'batch_'+str(k))
+        print('batch_{} build success'.format(k))
 
     def build_hop(self, k=5):
         if not self.graphbert_data:
@@ -213,3 +216,4 @@ class GraphBertPreprocess:
                 hop_dict[node][neighbor] = hop
 
         self.save(hop_dict, 'hop_'+str(k))
+        print('hop_{} build success'.format(k))

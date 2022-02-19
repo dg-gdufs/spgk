@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-24 18:24:13
 LastEditors: Renhetian
-LastEditTime: 2022-02-19 00:01:31
+LastEditTime: 2022-02-20 00:32:46
 '''
 
 import os
@@ -51,7 +51,10 @@ class DatasetLoader:
                 print("feature.pkl not found")
         if attr == 'kernel_matrix' or attr == 'all':
             try:
-                self.kernel_matrix = pickle.load(open(self.save_path + '/kernel_matrix.pkl', 'rb'))
+                if os.path.exists(self.save_path + '/kernel_matrix_graphbert.pkl'):
+                    self.kernel_matrix = pickle.load(open(self.save_path + '/kernel_matrix_graphbert.pkl', 'rb'))
+                else:
+                    self.kernel_matrix = pickle.load(open(self.save_path + '/kernel_matrix.pkl', 'rb'))
             except:
                 print("kernel_matrix.pkl not found")
 

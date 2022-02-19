@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-02-19 21:54:31
 LastEditors: Renhetian
-LastEditTime: 2022-02-19 23:04:03
+LastEditTime: 2022-02-20 00:29:46
 '''
 
 import torch
@@ -12,6 +12,7 @@ import torch.optim as optim
 
 from transformers.models.bert.modeling_bert import BertPreTrainedModel
 from codes.GraphBert import GraphBert
+from codes.Utils import device
 
 import time
 import pickle
@@ -39,7 +40,10 @@ class GraphBertGraphRecovery(BertPreTrainedModel):
         self.init_weights()
 
     def forward(self, raw_features, wl_role_ids, init_pos_ids, hop_dis_ids, idx=None):
-
+        raw_features = raw_features.to(device)
+        wl_role_ids = wl_role_ids.to(device)
+        init_pos_ids = init_pos_ids.to(device)
+        hop_dis_ids = hop_dis_ids.to(device)
         outputs = self.bert(raw_features, wl_role_ids, init_pos_ids, hop_dis_ids)
 
         sequence_output = 0
@@ -58,6 +62,7 @@ class GraphBertGraphRecovery(BertPreTrainedModel):
         print('GrapBert, dataset: ' + self.gbp.dataset_name + ', Pre-training, Graph Structure Recovery.')
         t_begin = time.time()
         optimizer = optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
+        
         for epoch in range(max_epoch):
             t_epoch_begin = time.time()
             # -------------------------
@@ -66,7 +71,7 @@ class GraphBertGraphRecovery(BertPreTrainedModel):
 
             output = self.forward(self.gbp.graphbert_data['raw_embeddings'], self.gbp.graphbert_data['wl_embedding'], self.gbp.graphbert_data['int_embeddings'], self.gbp.graphbert_data['hop_embeddings'])
             row_num, col_num = output.size()
-            loss_train = torch.sum((output - self.gbp.graphbert_data['A'].to_dense()) ** 2)/(row_num*col_num)
+            loss_train = torch.sum((output - self.gbp.graphbert_data['A'].to(device).to_dense()) ** 2)/(row_num*col_num)
 
             loss_train.backward()
             optimizer.step()
@@ -75,8 +80,8 @@ class GraphBertGraphRecovery(BertPreTrainedModel):
             # -------------------------
             if epoch % 50 == 0:
                 print('Epoch: {:04d}'.format(epoch + 1),
-                      'loss_train: {:.4f}'.format(loss_train.item()),
-                      'time: {:.4f}s'.format(time.time() - t_epoch_begin))
+                    'loss_train: {:.4f}'.format(loss_train.item()),
+                    'time: {:.4f}s'.format(time.time() - t_epoch_begin))
 
         print("Optimization Finished!")
         print("Total time elapsed: {:.4f}s".format(time.time() - t_begin))
@@ -85,4 +90,4 @@ class GraphBertGraphRecovery(BertPreTrainedModel):
     def run(self):
         self.train_model(self.max_epoch)
         with open(self.save_path + '/kernel_matrix_graphbert.pkl', 'wb') as f:
-            pickle.dump(self.output, f)
+            pickle.dump(self.output.detach().numpy(), f)

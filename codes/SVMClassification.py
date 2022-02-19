@@ -4,7 +4,7 @@ Version: 1.0
 Autor: Renhetian
 Date: 2022-01-27 20:48:11
 LastEditors: Renhetian
-LastEditTime: 2022-02-18 20:16:45
+LastEditTime: 2022-02-20 00:51:49
 '''
 
 from codes.Utils import time_now_formate
@@ -22,9 +22,10 @@ class SVMClassification:
 
     save_path = 'model/svm/'
 
-    def __init__(self, loader, cv=10) -> None:
+    def __init__(self, loader, cv=10, test_size=.3) -> None:
         self.loader = loader
         self.cv = cv
+        self.test_size = test_size
         self.save_path += loader.dataset_name
 
         if not os.path.exists(self.save_path):
@@ -35,7 +36,7 @@ class SVMClassification:
         feature = self.loader.kernel_matrix
         label = self.loader.label
 
-        X_train, X_test, y_train, y_test = train_test_split(feature, label, test_size=.3,random_state=0)
+        X_train, X_test, y_train, y_test = train_test_split(feature, label, test_size=self.test_size,random_state=0)
         # 训练模型
         model = OneVsRestClassifier(SVC(kernel='rbf',probability=True,random_state=0))
         print("[INFO] Successfully initialize a new model !")
@@ -43,7 +44,7 @@ class SVMClassification:
         clt = model.fit(X_train,y_train)
         print("[INFO] Model training completed !")
         # 保存训练好的模型，下次使用时直接加载就可以了
-        joblib.dump(clt, self.save_path + '/model.pkl')
+        joblib.dump(clt, self.save_path + '/model_{}[{}].pkl'.format(str(feature.shape[0]), time_now_formate()))
         print("[INFO] Model has been saved !")
         '''
         # 加载保存的模型
